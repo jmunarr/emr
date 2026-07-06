@@ -145,6 +145,21 @@ function goBack() {
     document.getElementById('patient-picker').style.display = 'flex';
 }
 
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar.classList.contains('w-64')) {
+        // Collapse
+        sidebar.classList.replace('w-64', 'w-0');
+        sidebar.classList.replace('p-6', 'p-0');
+        sidebar.classList.add('opacity-0');
+    } else {
+        // Expand
+        sidebar.classList.replace('w-0', 'w-64');
+        sidebar.classList.replace('p-0', 'p-6');
+        sidebar.classList.remove('opacity-0');
+    }
+}
+
 function pickPatient(name) {
     window.currentPatient = { 
         name, 
@@ -596,93 +611,4 @@ function showSection(section) {
                 <div class="bg-white border border-slate-200 rounded-lg shadow-sm">
                     <div class="p-4 border-b border-slate-100 flex justify-between items-center">
                         <h2 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="check" class="w-5 h-5 text-slate-800"></i> Care Plan Activity</h2>
-                        <span class="text-xs font-bold text-teal-700 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full">${p.carePlanLogs.length} saves</span>
-                    </div>
-                    <div class="p-4 bg-white">${cpLogs}</div>
-                </div>
-            </div>`;
-    }
-
-    // ----- BURNOUT GUARD -----
-    else if (section === 'burnout') {
-        const nextAlertNum = 5 - (p.completedTasks % 5);
-        
-        let logsHtml = '';
-        if (p.wellnessLogs.length === 0) {
-            logsHtml = `
-                <div class="bg-white border border-slate-200 rounded-lg p-6 h-32 flex flex-col justify-center">
-                    <p class="font-bold text-sm text-[#0a192f] mb-1">No wellness checks yet</p>
-                    <p class="text-xs text-slate-500">Every fifth completed task triggers a guided breath break.</p>
-                </div>`;
-        } else {
-            logsHtml = `<div class="bg-white border border-slate-200 rounded-lg p-4 max-h-48 overflow-y-auto">`;
-            p.wellnessLogs.forEach(log => {
-                logsHtml += `
-                    <div class="flex justify-between items-center border-b border-slate-100 py-2 last:border-0">
-                        <div>
-                            <p class="text-xs font-bold text-slate-800">${log.type}</p>
-                            <p class="text-xs text-slate-500">${log.msg}</p>
-                        </div>
-                        <span class="text-xs font-bold text-teal-700 bg-teal-50 px-2 py-1 rounded">${log.time}</span>
-                    </div>`;
-            });
-            logsHtml += `</div>`;
-        }
-
-        content.innerHTML = `
-            <div class="max-w-7xl mx-auto space-y-6 pb-12">
-                <div class="flex justify-between items-end mb-6">
-                    <div><h1 class="text-3xl font-bold text-slate-800 mb-1" id="active-section-burnout">BurnoutGuard</h1></div>
-                    <button onclick="triggerBreathBreak(false)" class="bg-teal-700 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-teal-800 shadow-sm transition-all text-sm">
-                        <i data-lucide="wind" class="w-4 h-4"></i> Breath Break
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
-                        <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-                            <h2 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="activity" class="w-5 h-5 text-slate-700"></i> Session Load</h2>
-                            <span class="text-xs text-teal-700 border border-teal-200 bg-teal-50 px-3 py-1 rounded-full">Next alert in ${nextAlertNum} actions</span>
-                        </div>
-                        <div class="flex justify-center pb-4">
-                            <div class="rounded-full w-48 h-48 flex flex-col items-center justify-center border-[8px] border-teal-50 bg-white shadow-inner relative">
-                                <div class="absolute inset-0 rounded-full border-[6px] border-teal-100 opacity-60 m-1"></div>
-                                <span class="text-5xl font-bold text-[#0a192f] z-10">${p.completedTasks}</span>
-                                <span class="text-sm text-slate-600 font-medium z-10 leading-tight text-center mt-1">completed<br>tasks</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
-                        <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-                            <h2 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="clock" class="w-5 h-5 text-slate-700"></i> Wellness Logs</h2>
-                            <span class="text-xs text-slate-500 border border-slate-200 bg-slate-50 px-3 py-1 rounded-full">${p.wellnessLogs.length} checks</span>
-                        </div>
-                        ${logsHtml}
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg border border-slate-200 shadow-sm mt-6">
-                    <div class="flex justify-between items-center p-4 border-b border-slate-100">
-                        <h2 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="list" class="w-5 h-5 text-slate-700"></i> Task Breakdown</h2>
-                    </div>
-                    <div class="p-4 grid grid-cols-3 gap-4 text-center">
-                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
-                            <p class="text-2xl font-bold text-slate-800">${p.vitalsLogs.length}</p>
-                            <p class="text-xs text-slate-500 uppercase tracking-wider font-bold">Vitals Saved</p>
-                        </div>
-                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
-                            <p class="text-2xl font-bold text-slate-800">${p.medLogs.length}</p>
-                            <p class="text-xs text-slate-500 uppercase tracking-wider font-bold">Meds Given</p>
-                        </div>
-                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
-                            <p class="text-2xl font-bold text-slate-800">${p.carePlanLogs.length}</p>
-                            <p class="text-xs text-slate-500 uppercase tracking-wider font-bold">Care Plans Saved</p>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
-    }
-
-    lucide.createIcons();
-}
+                        <span class="text-xs font-bold text-teal-700 bg-teal-50 border border-teal-200 px-3 py-1

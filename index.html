@@ -16,7 +16,6 @@
 </head>
 <body class="bg-[#0a192f] h-screen overflow-hidden font-sans">
 
-    <!-- Login Screen -->
     <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#0a192f]">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm text-center">
             <h2 class="text-2xl font-bold mb-6 text-slate-800">Nurse Login</h2>
@@ -27,21 +26,18 @@
         </div>
     </div>
 
-    <!-- Patient Picker (Census) -->
     <div id="patient-picker" class="fixed inset-0 z-50 p-8 flex flex-col items-center overflow-y-auto bg-[#0a192f]">
         <div class="mt-12 flex flex-col items-center">
             <h1 class="text-4xl font-bold text-white mb-2">Dream EMR</h1>
             <p class="text-slate-400 mb-8">Nursing student workspace | Select patient to begin</p>
         </div>
         
-        <!-- Add New Patient Button -->
         <div class="w-full max-w-6xl flex justify-end mb-6">
             <button onclick="openAddPatientModal()" class="bg-teal-600 text-white px-5 py-2.5 rounded-lg font-bold hover:bg-teal-700 transition shadow-lg flex items-center gap-2">
                 <i data-lucide="user-plus" class="w-5 h-5"></i> Admit New Patient
             </button>
         </div>
 
-        <!-- Built-in Tailwind Classes for guaranteed card rendering -->
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl pb-24" id="patient-grid">
             <button onclick="pickPatient('Bongar, Carl Zendrick')" class="bg-white text-slate-800 py-6 px-4 rounded-xl font-semibold shadow-md hover:bg-slate-100 hover:-translate-y-1 hover:shadow-xl transition-all duration-200 w-full text-center">Bongar, Carl Zendrick</button>
             <button onclick="pickPatient('Damino, Patrick')" class="bg-white text-slate-800 py-6 px-4 rounded-xl font-semibold shadow-md hover:bg-slate-100 hover:-translate-y-1 hover:shadow-xl transition-all duration-200 w-full text-center">Damino, Patrick</button>
@@ -66,7 +62,6 @@
         </div>
     </div>
 
-    <!-- Add Patient Modal -->
     <div id="add-patient-modal" class="fixed inset-0 z-[150] hidden items-center justify-center bg-[#0a192f] bg-opacity-80 backdrop-blur-sm p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
             <div class="sticky top-0 bg-white px-8 py-5 border-b border-slate-200 flex justify-between items-center z-10">
@@ -77,7 +72,6 @@
             </div>
             
             <div class="p-8 space-y-6">
-                <!-- Demographics -->
                 <div>
                     <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-3 border-b pb-1">Demographics</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -112,7 +106,6 @@
                     </div>
                 </div>
 
-                <!-- Clinical Info -->
                 <div>
                     <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-3 border-b pb-1">Clinical Information</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -140,7 +133,6 @@
                     </div>
                 </div>
 
-                <!-- Baseline Vitals -->
                 <div>
                     <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-3 border-b pb-1">Initial Vitals</h3>
                     <div class="grid grid-cols-5 gap-3">
@@ -160,10 +152,8 @@
         </div>
     </div>
 
-    <!-- Main Application UI -->
     <div id="main-ui" class="hidden flex h-screen text-slate-900 bg-slate-50">
-        <!-- Sidebar Navigation -->
-        <aside class="w-64 bg-[#0a192f] p-6 text-white flex flex-col">
+        <aside id="sidebar" class="w-64 bg-[#0a192f] p-6 text-white flex flex-col transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap">
             <button onclick="goBack()" class="flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition-colors"><i data-lucide="chevron-left"></i> Back to Census</button>
             <h2 id="active-patient" class="text-xl font-bold mb-8 text-blue-400 truncate"></h2>
             
@@ -182,10 +172,8 @@
             </nav>
         </aside>
         
-        <!-- Main Content Area -->
         <main class="flex-1 p-8 overflow-y-auto relative">
             
-            <!-- Floating Student View Badge -->
             <div class="absolute top-8 right-8 bg-white border border-slate-200 px-4 py-2 rounded-lg shadow-sm flex flex-col items-end">
                 <div class="flex items-center gap-2 text-sm font-bold text-slate-800">
                     <span class="w-2 h-2 rounded-full bg-green-500"></span> Student Nurse View
@@ -193,7 +181,10 @@
                 <div class="text-xs text-slate-500" id="current-time-display">Jul 04, 08:01 PM</div>
             </div>
 
-            <div class="max-w-7xl mx-auto mb-6 pr-48">
+            <div class="max-w-7xl mx-auto mb-6 pr-48 flex items-center gap-4">
+                <button onclick="toggleSidebar()" class="p-2 bg-white rounded-lg border border-slate-200 shadow-sm text-slate-500 hover:text-teal-600 transition-colors focus:outline-none">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
                 <h1 id="patient-name-display" class="text-3xl font-bold text-slate-800"></h1>
             </div>
 
