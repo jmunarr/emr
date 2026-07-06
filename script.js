@@ -1,5 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => { 
     lucide.createIcons(); 
+    
+    // Auto-collapse the sidebar on mobile screens (under 768px wide)
+    if (window.innerWidth < 768) {
+        toggleSidebar();
+    }
 });
 
 const patientData = {
@@ -587,28 +592,4 @@ function showSection(section) {
                 <div class="flex justify-between items-end mb-6">
                     <div>
                         <h1 class="text-3xl font-bold text-slate-800 mb-1">Nursing Care Plan</h1>
-                        <p class="text-slate-500">Based on Chief Complaint: <span class="font-bold text-slate-600">${p.complaint}</span></p>
-                    </div>
-                    <button onclick="saveCarePlanEvaluations()" class="bg-[#0a192f] text-white px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 hover:bg-slate-800 shadow-sm transition-all">
-                        <i data-lucide="save" class="w-4 h-4"></i> Save Evaluations
-                    </button>
-                </div>
-
-                <div class="bg-white border border-slate-200 rounded-lg shadow-sm">
-                    <div class="p-4 border-b border-slate-100 flex justify-between items-center">
-                        <h2 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5"></i> Active Care Plan</h2>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead class="bg-slate-50 text-[10px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
-                                <tr><th class="p-4 text-left w-1/4">Nursing Diagnosis</th><th class="p-4 text-left w-1/4">Goals / Outcomes</th><th class="p-4 text-left w-1/4">Interventions</th><th class="p-4 text-left w-1/4">Evaluation</th></tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 text-slate-700">${cpRows}</tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="bg-white border border-slate-200 rounded-lg shadow-sm">
-                    <div class="p-4 border-b border-slate-100 flex justify-between items-center">
-                        <h2 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="check" class="w-5 h-5 text-slate-800"></i> Care Plan Activity</h2>
-                        <span class="text-xs font-bold text-teal-700 bg-teal-50 border border-teal-200 px-3 py-1
+                        <p class="text-slate-500">Based on Chief Complaint: <span class="font-
