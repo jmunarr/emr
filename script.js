@@ -1,10 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => { 
     lucide.createIcons(); 
-    
-    // Auto-collapse the sidebar on mobile screens (under 768px wide)
-    if (window.innerWidth < 768) {
-        toggleSidebar();
-    }
 });
 
 const patientData = {
@@ -73,7 +68,6 @@ function closeAddPatientModal() {
     modal.classList.add('hidden');
     modal.classList.remove('flex');
     
-    // Clear the form fields after closing
     const inputs = modal.querySelectorAll('input, select');
     inputs.forEach(input => input.value = '');
 }
@@ -100,7 +94,7 @@ function saveNewPatient() {
         dob: document.getElementById('np-dob').value || "Unknown",
         room: document.getElementById('np-room').value || "Triage",
         ageSex: document.getElementById('np-agesex').value || "Unknown",
-        weight: document.getElementById('np-weight').value || "Unknown", // Added weight capture
+        weight: document.getElementById('np-weight').value || "Unknown", 
         physician: document.getElementById('np-physician').value || "Unassigned",
         lang: document.getElementById('np-lang').value || "English",
         complaint: document.getElementById('np-complaint').value || "Routine Check-up",
@@ -152,17 +146,7 @@ function goBack() {
 
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
-    if (sidebar.classList.contains('w-64')) {
-        // Collapse
-        sidebar.classList.replace('w-64', 'w-0');
-        sidebar.classList.replace('p-6', 'p-0');
-        sidebar.classList.add('opacity-0');
-    } else {
-        // Expand
-        sidebar.classList.replace('w-0', 'w-64');
-        sidebar.classList.replace('p-0', 'p-6');
-        sidebar.classList.remove('opacity-0');
-    }
+    sidebar.classList.toggle('-translate-x-full');
 }
 
 function pickPatient(name) {
@@ -321,6 +305,11 @@ function showSection(section) {
     const content = document.getElementById('section-content');
     if (!p) return;
 
+    // Auto-close sidebar on mobile after selection
+    if (window.innerWidth < 768) {
+        document.getElementById('sidebar').classList.add('-translate-x-full');
+    }
+
     updateActiveNav(section);
     const mainHeader = document.getElementById('patient-name-display');
     if (mainHeader) mainHeader.innerText = p.name;
@@ -335,37 +324,37 @@ function showSection(section) {
             `<div class="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg mb-4 flex items-center gap-3">
                 <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
                 <p class="text-sm font-bold"><span class="text-red-700">Allergy: ${p.allergy}</span> 
-                <span class="font-normal text-red-600 ml-2">${p.allergyNote}</span></p>
+                <span class="font-normal text-red-600 ml-2 block sm:inline mt-1 sm:mt-0">${p.allergyNote}</span></p>
             </div>`;
 
         content.innerHTML = `
             <div class="max-w-7xl mx-auto space-y-6">
-                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+                <div class="bg-white p-4 md:p-6 rounded-lg border border-slate-200 shadow-sm">
                     <h2 class="text-sm font-bold text-slate-500 mb-4 uppercase flex items-center gap-2">
                         <i data-lucide="heart" class="w-4 h-4 text-teal-600"></i> Live Telemetry
                     </h2>
                     ${allergyBanner}
-                    <div class="flex gap-4">
+                    <div class="flex flex-col md:flex-row gap-4">
                         <div class="relative overflow-hidden flex-1 h-24 bg-black rounded-lg border border-slate-700">
                             <svg viewBox="0 0 100 20" preserveAspectRatio="none" class="w-full h-full stroke-teal-400 stroke-[0.8] fill-none">
                                 <path id="telemetry-wave" d="M0 10 L20 10 L25 5 L30 15 L35 10 L50 10 L60 10 L65 2 L70 18 L75 10 L100 10" />
                             </svg>
                         </div>
-                        <div class="w-48 bg-teal-50 border border-teal-200 rounded-lg flex flex-col items-center justify-center p-2 text-slate-800">
+                        <div class="w-full md:w-48 bg-teal-50 border border-teal-200 rounded-lg flex flex-col items-center justify-center p-4 text-slate-800">
                             <span class="text-4xl font-bold">${p.acuity}</span>
                             <span class="text-sm font-medium text-slate-600">${p.acuityLabel} Acuity</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
-                    <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                <div class="bg-white p-4 md:p-6 rounded-lg border border-slate-200 shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-6 border-b border-slate-100 pb-4 gap-2">
                         <h2 class="text-xl font-bold flex items-center gap-2 text-slate-800">
                             <i data-lucide="layout-grid" class="w-5 h-5"></i> Demographics
                         </h2>
                         <span class="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">MRN ${p.mrn}</span>
                     </div>
-                    <div class="grid grid-cols-2 gap-x-12 gap-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
                         <div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Name</p><p class="font-bold text-lg">${p.name}</p></div>
                         <div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Age / Sex</p><p class="font-bold text-lg">${p.ageSex}</p></div>
                         <div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Date of Birth</p><p class="font-bold text-lg">${p.dob}</p></div>
@@ -373,11 +362,11 @@ function showSection(section) {
                         <div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Room Number</p><p class="font-bold text-lg">${p.room}</p></div>
                         <div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Attending Physician</p><p class="font-bold text-lg">${p.physician}</p></div>
                         <div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Primary Language</p><p class="font-bold text-lg">${p.lang}</p></div>
-                        <div class="col-span-2"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Chief Complaint</p><p class="font-bold text-lg">${p.complaint}</p></div>
+                        <div class="col-span-1 md:col-span-2"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Chief Complaint</p><p class="font-bold text-lg">${p.complaint}</p></div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+                <div class="bg-white p-4 md:p-6 rounded-lg border border-slate-200 shadow-sm">
                     <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
                         <h2 class="text-xl font-bold flex items-center gap-2 text-slate-800">
                             <i data-lucide="clipboard-list" class="w-5 h-5"></i> Quick Vitals Summary
@@ -432,27 +421,27 @@ function showSection(section) {
                 </div>`;
         } else {
             p.vitalsLogs.forEach(v => {
-                logEntries += `<div class="text-xs text-slate-700 bg-teal-50 border border-teal-100 rounded p-2 mb-2 flex justify-between items-center"><span>Vitals logged</span><span class="font-bold">${v.time}</span></div>`;
+                logEntries += `<div class="text-xs text-slate-700 bg-teal-50 border border-teal-100 rounded p-2 mb-2 flex flex-col md:flex-row md:justify-between md:items-center gap-1"><span>Vitals logged</span><span class="font-bold">${v.time}</span></div>`;
             });
         }
 
         content.innerHTML = `
             <div class="max-w-7xl mx-auto space-y-6 pb-12">
-                <div class="flex gap-2 text-xs font-medium text-slate-600 mb-4">
+                <div class="flex flex-wrap gap-2 text-xs font-medium text-slate-600 mb-4">
                     <span class="bg-white border border-slate-200 px-3 py-1 rounded-full">${p.ageSex}</span>
                     <span class="bg-white border border-slate-200 px-3 py-1 rounded-full">DOB: ${p.dob}</span>
                 </div>
 
-                <div class="flex justify-between items-end mb-6">
-                    <div><h1 class="text-3xl font-bold text-slate-800 mb-1">Flowsheets</h1></div>
-                    <button onclick="setNow()" class="flex items-center gap-2 border border-slate-300 bg-white text-slate-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-50 shadow-sm transition-all">
+                <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-end mb-6 gap-4">
+                    <div><h1 class="text-2xl md:text-3xl font-bold text-slate-800 mb-1">Flowsheets</h1></div>
+                    <button onclick="setNow()" class="w-full sm:w-auto flex items-center justify-center gap-2 border border-slate-300 bg-white text-slate-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-50 shadow-sm transition-all">
                         <i data-lucide="clock" class="w-4 h-4"></i> Set Time Now
                     </button>
                 </div>
 
                 <div class="bg-white border border-slate-200 rounded-lg shadow-sm">
-                    <div class="p-5">
-                        <div class="grid grid-cols-6 gap-4 mb-6">
+                    <div class="p-4 md:p-5">
+                        <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
                             <div class="col-span-2">
                                 <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">Timestamp</label>
                                 <input type="datetime-local" id="vital-time" class="w-full border border-slate-300 rounded-md p-2 text-sm focus:border-teal-500 outline-none">
@@ -463,17 +452,17 @@ function showSection(section) {
                             <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">TEMP</label><input type="number" id="vital-temp" step="0.1" placeholder="${p.temp}" class="w-full border border-slate-300 rounded-md p-2 text-sm focus:border-teal-500 outline-none"></div>
                             <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">O2 %</label><input type="number" id="vital-o2" placeholder="${p.o2}" class="w-full border border-slate-300 rounded-md p-2 text-sm focus:border-teal-500 outline-none"></div>
                         </div>
-                        <button onclick="saveVitals()" class="bg-[#0a192f] text-white px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-slate-800 transition-all flex items-center gap-2">
+                        <button onclick="saveVitals()" class="w-full md:w-auto bg-[#0a192f] text-white px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
                             <i data-lucide="save" class="w-4 h-4"></i> Save Entry
                         </button>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-                    <div class="col-span-2 bg-white border border-slate-200 rounded-lg shadow-sm">
+                    <div class="col-span-1 lg:col-span-2 bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
                         <div class="p-4 border-b border-slate-100"><h2 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="table" class="w-5 h-5"></i> Vital Signs Table</h2></div>
-                        <div class="p-4">
-                            <table class="w-full text-sm text-left">
+                        <div class="p-4 overflow-x-auto">
+                            <table class="w-full text-sm text-left min-w-[600px]">
                                 <thead class="text-[10px] font-bold text-slate-500 uppercase border-b border-slate-200">
                                     <tr><th class="pb-3 px-2">Time</th><th class="pb-3 px-2">BP</th><th class="pb-3 px-2">HR</th><th class="pb-3 px-2">RR</th><th class="pb-3 px-2">TEMP</th><th class="pb-3 px-2">O2 SAT</th></tr>
                                 </thead>
@@ -504,19 +493,19 @@ function showSection(section) {
             let actionBtn = '';
             
             if (m.status === 'GIVEN') {
-                statusBadge = `<span class="bg-green-50 text-green-700 border border-green-200 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Given</span>`;
-                actionBtn = `<button disabled class="bg-slate-200 text-slate-500 px-3 py-1.5 rounded text-xs font-bold flex items-center gap-1 cursor-not-allowed"><i data-lucide="check-check" class="w-3 h-3"></i> Administered</button>`;
+                statusBadge = `<span class="bg-green-50 text-green-700 border border-green-200 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest block text-center">Given</span>`;
+                actionBtn = `<button disabled class="bg-slate-200 text-slate-500 px-3 py-1.5 rounded text-xs font-bold flex items-center justify-center w-full gap-1 cursor-not-allowed"><i data-lucide="check-check" class="w-3 h-3"></i> Administered</button>`;
             } else if (m.status === 'OVERDUE') {
-                statusBadge = `<span class="bg-red-50 text-red-700 border border-red-200 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Overdue</span>`;
-                actionBtn = `<button onclick="administerMed(${i})" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded text-xs font-bold flex items-center gap-1 transition-colors"><i data-lucide="check" class="w-3 h-3"></i> Administer</button>`;
+                statusBadge = `<span class="bg-red-50 text-red-700 border border-red-200 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest block text-center">Overdue</span>`;
+                actionBtn = `<button onclick="administerMed(${i})" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded text-xs font-bold flex items-center justify-center w-full gap-1 transition-colors"><i data-lucide="check" class="w-3 h-3"></i> Administer</button>`;
             } else {
-                statusBadge = `<span class="bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Due</span>`;
-                actionBtn = `<button onclick="administerMed(${i})" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded text-xs font-bold flex items-center gap-1 transition-colors"><i data-lucide="check" class="w-3 h-3"></i> Administer</button>`;
+                statusBadge = `<span class="bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest block text-center">Due</span>`;
+                actionBtn = `<button onclick="administerMed(${i})" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded text-xs font-bold flex items-center justify-center w-full gap-1 transition-colors"><i data-lucide="check" class="w-3 h-3"></i> Administer</button>`;
             }
 
             medRows += `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="py-3 px-2"><p class="font-bold text-slate-800 text-base">${m.name}</p><p class="text-xs text-slate-500">${m.desc}</p></td>
+                <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
+                    <td class="py-3 px-2 min-w-[150px]"><p class="font-bold text-slate-800 text-base">${m.name}</p><p class="text-xs text-slate-500">${m.desc}</p></td>
                     <td class="px-2">${m.dose}</td><td class="px-2">${m.route}</td><td class="px-2">${m.freq}</td><td class="px-2">${m.due}</td>
                     <td class="px-2">${statusBadge}</td><td class="px-2">${actionBtn}</td>
                 </tr>`;
@@ -538,19 +527,19 @@ function showSection(section) {
         content.innerHTML = `
             <div class="max-w-7xl mx-auto space-y-6 pb-12">
                 <div class="flex justify-between items-end mb-6">
-                    <div><h1 class="text-3xl font-bold text-slate-800 mb-1">Medication Administration Record</h1></div>
+                    <div><h1 class="text-2xl md:text-3xl font-bold text-slate-800 mb-1">Medication Record</h1></div>
                 </div>
                 ${marAllergyBanner}
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="col-span-2 bg-white border border-slate-200 rounded-lg shadow-sm">
+                    <div class="col-span-1 lg:col-span-2 bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
                         <div class="p-4 border-b border-slate-100 flex justify-between"><h2 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="link" class="w-4 h-4"></i> Medication Schedule</h2></div>
                         <div class="p-4 overflow-x-auto">
-                            <table class="w-full text-sm text-left">
+                            <table class="w-full text-sm text-left min-w-[700px]">
                                 <thead class="text-[10px] font-bold text-slate-500 uppercase border-b border-slate-200">
-                                    <tr><th class="pb-3 px-2">Drug Name</th><th class="pb-3 px-2">Dose</th><th class="pb-3 px-2">Route</th><th class="pb-3 px-2">Frequency</th><th class="pb-3 px-2">Time Due</th><th class="pb-3 px-2">Status</th><th class="pb-3 px-2">Action</th></tr>
+                                    <tr><th class="pb-3 px-2">Drug Name</th><th class="pb-3 px-2">Dose</th><th class="pb-3 px-2">Route</th><th class="pb-3 px-2">Frequency</th><th class="pb-3 px-2">Time Due</th><th class="pb-3 px-2 text-center">Status</th><th class="pb-3 px-2 text-center">Action</th></tr>
                                 </thead>
-                                <tbody class="text-slate-700 divide-y divide-slate-100">${medRows}</tbody>
+                                <tbody class="text-slate-700">${medRows}</tbody>
                             </table>
                         </div>
                     </div>
@@ -570,11 +559,11 @@ function showSection(section) {
         let cpRows = '';
         p.carePlan.forEach((cp, i) => {
             cpRows += `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="p-4 align-top"><p class="font-bold text-slate-800">${cp.dx}</p><p class="text-xs text-slate-500 mt-1">${cp.rto}</p></td>
-                    <td class="p-4 align-top text-xs">${cp.goal}</td>
-                    <td class="p-4 align-top text-xs">${cp.int}</td>
-                    <td class="p-4 align-top"><textarea id="cp-eval-${i}" class="w-full border border-slate-300 rounded p-2 h-20 text-xs focus:border-teal-500 outline-none transition-all">${cp.eval}</textarea></td>
+                <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
+                    <td class="p-4 align-top min-w-[200px]"><p class="font-bold text-slate-800">${cp.dx}</p><p class="text-xs text-slate-500 mt-1">${cp.rto}</p></td>
+                    <td class="p-4 align-top text-xs min-w-[200px]">${cp.goal}</td>
+                    <td class="p-4 align-top text-xs min-w-[200px]">${cp.int}</td>
+                    <td class="p-4 align-top min-w-[250px]"><textarea id="cp-eval-${i}" class="w-full border border-slate-300 rounded p-2 h-20 text-xs focus:border-teal-500 outline-none transition-all">${cp.eval}</textarea></td>
                 </tr>`;
         });
 
@@ -583,13 +572,126 @@ function showSection(section) {
             cpLogs = `<p class="font-bold text-sm text-slate-700">No care plan saves this session</p><p class="text-xs text-slate-500">Edit evaluation text and save to document progress.</p>`;
         } else {
             p.carePlanLogs.forEach(l => {
-                cpLogs += `<div class="text-xs text-slate-700 bg-teal-50 border border-teal-100 rounded p-2 mb-2 flex justify-between items-center"><span>${l.msg}</span><span class="font-bold ml-2">${l.time}</span></div>`;
+                cpLogs += `<div class="text-xs text-slate-700 bg-teal-50 border border-teal-100 rounded p-2 mb-2 flex flex-col md:flex-row md:justify-between md:items-center gap-1"><span>${l.msg}</span><span class="font-bold">${l.time}</span></div>`;
             });
         }
 
         content.innerHTML = `
             <div class="max-w-7xl mx-auto space-y-6 pb-12">
-                <div class="flex justify-between items-end mb-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 gap-4">
                     <div>
-                        <h1 class="text-3xl font-bold text-slate-800 mb-1">Nursing Care Plan</h1>
-                        <p class="text-slate-500">Based on Chief Complaint: <span class="font-
+                        <h1 class="text-2xl md:text-3xl font-bold text-slate-800 mb-1">Nursing Care Plan</h1>
+                        <p class="text-slate-500 text-sm">Based on Chief Complaint: <span class="font-bold text-slate-600">${p.complaint}</span></p>
+                    </div>
+                    <button onclick="saveCarePlanEvaluations()" class="w-full sm:w-auto justify-center bg-[#0a192f] text-white px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 hover:bg-slate-800 shadow-sm transition-all">
+                        <i data-lucide="save" class="w-4 h-4"></i> Save Evaluations
+                    </button>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+                    <div class="p-4 border-b border-slate-100 flex justify-between items-center">
+                        <h2 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5"></i> Active Care Plan</h2>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm min-w-[850px]">
+                            <thead class="bg-slate-50 text-[10px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                                <tr><th class="p-4 text-left w-1/4">Nursing Diagnosis</th><th class="p-4 text-left w-1/4">Goals / Outcomes</th><th class="p-4 text-left w-1/4">Interventions</th><th class="p-4 text-left w-1/4">Evaluation</th></tr>
+                            </thead>
+                            <tbody class="text-slate-700">${cpRows}</tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-lg shadow-sm">
+                    <div class="p-4 border-b border-slate-100 flex justify-between items-center">
+                        <h2 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="check" class="w-5 h-5 text-slate-800"></i> Care Plan Activity</h2>
+                        <span class="text-xs font-bold text-teal-700 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full">${p.carePlanLogs.length} saves</span>
+                    </div>
+                    <div class="p-4 bg-white">${cpLogs}</div>
+                </div>
+            </div>`;
+    }
+
+    // ----- BURNOUT GUARD -----
+    else if (section === 'burnout') {
+        const nextAlertNum = 5 - (p.completedTasks % 5);
+        
+        let logsHtml = '';
+        if (p.wellnessLogs.length === 0) {
+            logsHtml = `
+                <div class="bg-white border border-slate-200 rounded-lg p-6 h-32 flex flex-col justify-center text-center">
+                    <p class="font-bold text-sm text-[#0a192f] mb-1">No wellness checks yet</p>
+                    <p class="text-xs text-slate-500">Every fifth completed task triggers a guided breath break.</p>
+                </div>`;
+        } else {
+            logsHtml = `<div class="bg-white border border-slate-200 rounded-lg p-4 max-h-48 overflow-y-auto">`;
+            p.wellnessLogs.forEach(log => {
+                logsHtml += `
+                    <div class="flex justify-between items-center border-b border-slate-100 py-2 last:border-0">
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">${log.type}</p>
+                            <p class="text-[10px] md:text-xs text-slate-500">${log.msg}</p>
+                        </div>
+                        <span class="text-[10px] md:text-xs font-bold text-teal-700 bg-teal-50 px-2 py-1 rounded">${log.time}</span>
+                    </div>`;
+            });
+            logsHtml += `</div>`;
+        }
+
+        content.innerHTML = `
+            <div class="max-w-7xl mx-auto space-y-6 pb-12">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 gap-4">
+                    <div><h1 class="text-2xl md:text-3xl font-bold text-slate-800 mb-1" id="active-section-burnout">BurnoutGuard</h1></div>
+                    <button onclick="triggerBreathBreak(false)" class="w-full sm:w-auto justify-center bg-teal-700 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-teal-800 shadow-sm transition-all text-sm">
+                        <i data-lucide="wind" class="w-4 h-4"></i> Breath Break
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                            <h2 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="activity" class="w-5 h-5 text-slate-700"></i> Session Load</h2>
+                            <span class="text-[10px] md:text-xs text-teal-700 border border-teal-200 bg-teal-50 px-3 py-1 rounded-full">Next alert in ${nextAlertNum} actions</span>
+                        </div>
+                        <div class="flex justify-center pb-4">
+                            <div class="rounded-full w-40 h-40 md:w-48 md:h-48 flex flex-col items-center justify-center border-[8px] border-teal-50 bg-white shadow-inner relative">
+                                <div class="absolute inset-0 rounded-full border-[6px] border-teal-100 opacity-60 m-1"></div>
+                                <span class="text-4xl md:text-5xl font-bold text-[#0a192f] z-10">${p.completedTasks}</span>
+                                <span class="text-xs md:text-sm text-slate-600 font-medium z-10 leading-tight text-center mt-1">completed<br>tasks</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                            <h2 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="clock" class="w-5 h-5 text-slate-700"></i> Wellness Logs</h2>
+                            <span class="text-[10px] md:text-xs text-slate-500 border border-slate-200 bg-slate-50 px-3 py-1 rounded-full">${p.wellnessLogs.length} checks</span>
+                        </div>
+                        ${logsHtml}
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg border border-slate-200 shadow-sm mt-6">
+                    <div class="flex justify-between items-center p-4 border-b border-slate-100">
+                        <h2 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="list" class="w-5 h-5 text-slate-700"></i> Task Breakdown</h2>
+                    </div>
+                    <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                            <p class="text-2xl font-bold text-slate-800">${p.vitalsLogs.length}</p>
+                            <p class="text-[10px] md:text-xs text-slate-500 uppercase tracking-wider font-bold">Vitals Saved</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                            <p class="text-2xl font-bold text-slate-800">${p.medLogs.length}</p>
+                            <p class="text-[10px] md:text-xs text-slate-500 uppercase tracking-wider font-bold">Meds Given</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                            <p class="text-2xl font-bold text-slate-800">${p.carePlanLogs.length}</p>
+                            <p class="text-[10px] md:text-xs text-slate-500 uppercase tracking-wider font-bold">Care Plans Saved</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    lucide.createIcons();
+}
